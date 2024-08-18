@@ -1,0 +1,5 @@
+clipman
+pillow
+requests
+pyautogui
+pyscreenshot
