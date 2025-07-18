@@ -1,15 +1,30 @@
 (async function () {
     // ===================================================================================
+    // SELECTORS (Change karne ke liye yahan edit karein)
+    // ===================================================================================
+    const SELECTORS = {
+        WORDS_CONTAINER: ".hideableWords.unselectable",
+        TEXT_INPUT: ".txtInput",
+        COUNTDOWN_POPUP: ".countdownPopup.horizontalCountdownPopup",
+        OCR_CONTAINER: ".bodyWidgetHolder",
+        CHALLENGE_TEXTAREA: ".challengeTextArea",
+        SUBMIT_BUTTON: ".gwt-Button"
+    };
+
+    // ===================================================================================
     // CORE VARIABLES
     // ===================================================================================
     let elementGone = false;
     let wordObserver = null;
     let isTyping = false;
+    let typingStats = { wordsTyped: 0, errorsIntentional: 0, totalChars: 0 };
     let config = {
         speed: 80,
         errorRate: 2,
         autoSubmit: false,
-        ocrApiKey: "K88541616888957"
+        ocrApiKey: "K88541616888957",
+        humanizedTyping: true,
+        burstMode: false
     };
 
     // ===================================================================================
@@ -17,11 +32,16 @@
     // ===================================================================================
     function loadConfigFromStorage() {
         return new Promise((resolve) => {
-            chrome.storage?.local.get(["speed", "errorRate", "autoSubmit", "ocrApiKey"], (data) => {
+            chrome.storage?.local.get([
+                "speed", "errorRate", "autoSubmit", "ocrApiKey", 
+                "humanizedTyping", "burstMode"
+            ], (data) => {
                 config.speed = data.speed ?? config.speed;
                 config.errorRate = data.errorRate ?? config.errorRate;
                 config.autoSubmit = data.autoSubmit ?? config.autoSubmit;
                 config.ocrApiKey = data.ocrApiKey || config.ocrApiKey;
+                config.humanizedTyping = data.humanizedTyping ?? config.humanizedTyping;
+                config.burstMode = data.burstMode ?? config.burstMode;
                 console.log("⚙️ Loaded Config:", config);
                 resolve();
             });
@@ -62,7 +82,7 @@
     }
 
     // ===================================================================================
-    // CORE TYPING LOGIC (Human-like)
+    // CORE TYPING LOGIC (Human-like with Enhanced Features)
     // ===================================================================================
     async function typeTextIntoInput(inputEl, text) {
         if (isTyping) {
@@ -73,39 +93,64 @@
         inputEl.focus();
         inputEl.value = "";
         let index = 0;
+        
+        // Update stats
+        typingStats.wordsTyped++;
+        typingStats.totalChars += text.length;
 
         async function typeNextChar() {
             if (index < text.length) {
                 let char = text[index];
                 let typo = false;
+                let delay = config.speed;
 
+                // Human-like typing patterns
+                if (config.humanizedTyping) {
+                    // Slower for difficult characters
+                    if (/[A-Z]/.test(char)) delay += 30;
+                    if (/[!@#$%^&*()_+{}|:"<>?]/.test(char)) delay += 50;
+                    
+                    // Faster for common words
+                    if (['the', 'and', 'for', 'are', 'but', 'not', 'you', 'all'].includes(text.toLowerCase())) {
+                        delay -= 20;
+                    }
+                }
+
+                // Burst mode (occasional fast typing)
+                if (config.burstMode && Math.random() < 0.15) {
+                    delay = Math.max(delay - 40, 10);
+                }
+
+                // Error simulation
                 if (Math.random() < config.errorRate / 100) {
-                    const wrongChar = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+                    const wrongChars = "qwertyuiopasdfghjklzxcvbnm";
+                    const wrongChar = wrongChars[Math.floor(Math.random() * wrongChars.length)];
                     console.log(`🤕 Galat char '${wrongChar}' type hua`);
                     inputEl.value += wrongChar;
                     inputEl.dispatchEvent(new Event("input", { bubbles: true }));
-                    await sleep(300);
+                    await sleep(200 + Math.random() * 200);
                     inputEl.value = inputEl.value.slice(0, -1);
                     inputEl.dispatchEvent(new Event("input", { bubbles: true }));
-                    await sleep(100);
+                    await sleep(100 + Math.random() * 100);
                     inputEl.value += char;
                     inputEl.dispatchEvent(new Event("input", { bubbles: true }));
                     typo = true;
+                    typingStats.errorsIntentional++;
                 } else {
                     inputEl.value += char;
                     inputEl.dispatchEvent(new Event("input", { bubbles: true }));
                 }
 
                 index++;
-                const delay = Math.floor(Math.random() * 70) + config.speed;
-                await sleep(typo ? delay + 200 : delay);
+                const finalDelay = Math.floor(Math.random() * 70) + delay;
+                await sleep(typo ? finalDelay + 200 : finalDelay);
                 await typeNextChar();
             } else {
                 await sleep(150);
                 inputEl.value += " ";
                 inputEl.dispatchEvent(new Event("input", { bubbles: true }));
                 isTyping = false;
-                console.log("✅ Typing space ke saath poori hui!");
+                console.log(`✅ Typing complete! Stats: ${typingStats.wordsTyped} words, ${typingStats.errorsIntentional} errors`);
             }
         }
 
@@ -132,13 +177,13 @@
 
     async function typeIntoTextareaAndSubmit(result) {
         try {
-            const textarea = await waitFor(".challengeTextArea");
+            const textarea = await waitFor(SELECTORS.CHALLENGE_TEXTAREA);
             textarea.focus();
             textarea.value = result;
             textarea.dispatchEvent(new Event("input", { bubbles: true }));
             await sleep(500);
 
-            const submitBtn = document.querySelector(".gwt-Button");
+            const submitBtn = document.querySelector(SELECTORS.SUBMIT_BUTTON);
             if (submitBtn && config.autoSubmit) {
                 submitBtn.click();
                 console.log("✅ OCR result auto-submitted.");
@@ -156,13 +201,13 @@
     async function startTypingCycle() {
         try {
             console.log("🔄 Naya typing cycle shuru ho raha hai...");
-            const wordContainer = await waitFor(".hideableWords.unselectable");
-            const inputBox = await waitFor(".txtInput");
+            const wordContainer = await waitFor(SELECTORS.WORDS_CONTAINER);
+            const inputBox = await waitFor(SELECTORS.TEXT_INPUT);
             const hiddenSpan = wordContainer.querySelector("span");
             if (!hiddenSpan) throw new Error("❌ Word span nahi mila.");
             elementGone = false;
             console.log("⏳ Countdown khatm hone ka intezaar...");
-            await waitUntilElementGone(".countdownPopup.horizontalCountdownPopup");
+            await waitUntilElementGone(SELECTORS.COUNTDOWN_POPUP);
             console.log("✅ Countdown khatm, typing shuru.");
 
             if (wordObserver) wordObserver.disconnect();
@@ -197,7 +242,7 @@
     const countdownObserver = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             mutation.addedNodes.forEach(node => {
-                if (node.nodeType === 1 && node.matches?.(".countdownPopup.horizontalCountdownPopup")) {
+                if (node.nodeType === 1 && node.matches?.(SELECTORS.COUNTDOWN_POPUP)) {
                     console.log("🕒 Naya countdown detect hua!");
                     startTypingCycle();
                 }
@@ -206,11 +251,10 @@
     });
 
     const ocrChallengeObserver = new MutationObserver(async (mutations, observer) => {
-        const OCR_CONTAINER_SELECTOR = ".bodyWidgetHolder";
         for (const mutation of mutations) {
             for (const node of mutation.addedNodes) {
                 if (node.nodeType === 1 && node.querySelector) {
-                    const selector = `${OCR_CONTAINER_SELECTOR} img`;
+                    const selector = `${SELECTORS.OCR_CONTAINER} img`;
                     const img = node.querySelector(selector);
                     if (img?.src) {
                         console.log("📸 OCR image detect hui!");

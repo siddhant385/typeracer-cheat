@@ -1,20 +1,34 @@
 {
   "manifest_version": 3,
-  "name": "Typeracer Helper",
-  "version": "1.0",
-  "description": "Automate typing and OCR challenges on Typeracer with custom speed and errors.",
+  "name": "TypeRacer Pro - Advanced Typing Bot",
+  "version": "2.0",
+  "description": "Advanced TypeRacer automation with human-like typing patterns, OCR support, and modern UI. Educational use only.",
   "permissions": ["storage"],
   "host_permissions": ["https://*.typeracer.com/*", "https://api.ocr.space/*"],
   "action": {
     "default_popup": "popup.html",
+    "default_title": "TypeRacer Pro Settings",
     "default_icon": {
+      "16": "icons/Blog.png",
+      "32": "icons/Blog.png",
+      "48": "icons/Blog.png",
       "128": "icons/Blog.png"
     }
+  },
+  "icons": {
+    "16": "icons/Blog.png",
+    "32": "icons/Blog.png",
+    "48": "icons/Blog.png",
+    "128": "icons/Blog.png"
   },
   "content_scripts": [
     {
       "matches": ["https://*.typeracer.com/*"],
-      "js": ["content_script.js"]
+      "js": ["content_script.js"],
+      "run_at": "document_start"
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
 }

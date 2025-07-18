@@ -9,45 +9,114 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #1e1e1e;
-            --surface-color: #2d2d2d;
-            --primary-color: #00e676;
-            --text-color: #e0e0e0;
-            --text-secondary: #a0a0a0;
-            --border-color: #424242;
+            --bg-color: #0d1117;
+            --surface-color: #21262d;
+            --surface-hover: #30363d;
+            --primary-color: #238636;
+            --primary-hover: #2ea043;
+            --accent-color: #58a6ff;
+            --text-color: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --danger-color: #da3633;
+            --warning-color: #d29922;
+            --success-color: #3fb950;
+            --gradient-bg: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gradient-bg);
             color: var(--text-color);
-            width: 320px;
-            padding: 16px;
+            width: 380px;
+            padding: 20px;
             margin: 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-radius: 12px;
         }
 
         .header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-bottom: 16px;
+            gap: 16px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 1px;
         }
 
         .header img {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
         .header h2 {
             margin: 0;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: var(--surface-color);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
         }
 
         .setting-row {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--surface-color);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .setting-row:hover {
+            background: var(--surface-hover);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
         }
 
         .setting-row label {
@@ -55,36 +124,71 @@
             justify-content: space-between;
             align-items: center;
             font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 8px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-color);
         }
 
         .setting-row input[type="number"],
         .setting-row input[type="text"] {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
             color: var(--text-color);
-            border-radius: 6px;
-            padding: 8px;
-            width: 70px;
+            border-radius: 8px;
+            padding: 10px 12px;
+            width: 80px;
             text-align: center;
             font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .setting-row input[type="number"]:focus,
+        .setting-row input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(35, 134, 54, 0.1);
         }
 
         input[type="text"]#ocrApiKey {
-            width: 95%;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
         }
 
         input[type="range"] {
             width: 100%;
-            accent-color: var(--primary-color);
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            outline: none;
+            margin-top: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 44px;
-            height: 24px;
+            width: 52px;
+            height: 28px;
         }
 
         .toggle-switch input {
@@ -100,72 +204,143 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            transition: .4s;
-            border-radius: 24px;
+            background: var(--border-color);
+            border: 2px solid var(--border-color);
+            transition: all 0.4s ease;
+            border-radius: 28px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background: var(--text-color);
+            transition: all 0.4s ease;
             border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        input:checked+.slider {
-            background-color: var(--primary-color);
+        input:checked + .slider {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
         }
 
-        input:checked+.slider:before {
-            transform: translateX(20px);
+        input:checked + .slider:before {
+            transform: translateX(24px);
+            background: white;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+
+        .feature-badge.new {
+            background: var(--success-color);
         }
 
         .button-group {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
+            margin-top: 24px;
         }
 
         button {
             flex-grow: 1;
-            padding: 10px;
+            padding: 12px 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         #save {
-            background-color: var(--primary-color);
-            color: var(--bg-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
         }
 
         #save:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(35, 134, 54, 0.4);
         }
 
         #reset {
-            background-color: var(--surface-color);
+            background: var(--surface-color);
             color: var(--text-secondary);
+            border: 2px solid var(--border-color);
         }
 
         #reset:hover {
-            background-color: var(--border-color);
+            background: var(--danger-color);
+            color: white;
+            border-color: var(--danger-color);
         }
 
         #status {
-            margin-top: 15px;
+            margin-top: 16px;
             text-align: center;
-            font-weight: 500;
-            height: 20px;
+            font-weight: 600;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .status-success {
+            background: rgba(63, 185, 80, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .status-error {
+            background: rgba(218, 54, 51, 0.1);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-color);
+            color: var(--text-color);
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
         }
     </style>
 </head>
@@ -174,29 +349,63 @@
 
     <div class="header">
         <img src="icons/Blog.png" alt="icon">
-        <h2>Helper Settings</h2>
+        <h2>TypeRacer Pro</h2>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-item">
+            <div class="stat-value" id="currentWpm">0</div>
+            <div class="stat-label">Target WPM</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="currentAccuracy">98%</div>
+            <div class="stat-label">Accuracy</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="raceCount">0</div>
+            <div class="stat-label">Races</div>
+        </div>
     </div>
 
     <div class="setting-row">
-        <label for="speed">
-            <span>Typing Delay (ms)</span>
+        <label for="speed" class="tooltip" data-tooltip="Lower values = faster typing">
+            <span>Typing Speed (ms) <span class="feature-badge">Core</span></span>
             <input type="number" id="speed" min="10" max="200">
         </label>
         <input type="range" id="speedSlider" min="10" max="200">
     </div>
 
-
     <div class="setting-row">
-        <label for="errorRate">
-            <span>Error Rate (%)</span>
+        <label for="errorRate" class="tooltip" data-tooltip="Percentage of intentional typos for realism">
+            <span>Human Errors (%) <span class="feature-badge">Core</span></span>
             <input type="number" id="errorRate" min="0" max="100">
         </label>
         <input type="range" id="errorRateSlider" min="0" max="100">
     </div>
 
     <div class="setting-row">
-        <label>
-            <span>Auto-Submit OCR</span>
+        <label class="tooltip" data-tooltip="Makes typing patterns more human-like">
+            <span>Humanized Typing <span class="feature-badge new">New</span></span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="humanizedTyping">
+                <span class="slider"></span>
+            </label>
+        </label>
+    </div>
+
+    <div class="setting-row">
+        <label class="tooltip" data-tooltip="Occasional fast typing bursts">
+            <span>Burst Mode <span class="feature-badge new">New</span></span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="burstMode">
+                <span class="slider"></span>
+            </label>
+        </label>
+    </div>
+
+    <div class="setting-row">
+        <label class="tooltip" data-tooltip="Automatically submit OCR challenges">
+            <span>Auto-Submit OCR <span class="feature-badge">OCR</span></span>
             <label class="toggle-switch">
                 <input type="checkbox" id="autoSubmit">
                 <span class="slider"></span>
@@ -205,8 +414,8 @@
     </div>
 
     <div class="setting-row">
-        <label for="ocrApiKey">OCR API Key</label>
-        <input type="text" id="ocrApiKey" placeholder="Your ocr.space API key">
+        <label for="ocrApiKey" class="tooltip" data-tooltip="Get free API key from ocr.space">OCR API Key <span class="feature-badge">OCR</span></label>
+        <input type="text" id="ocrApiKey" placeholder="Enter your ocr.space API key">
     </div>
 
     <div class="button-group">
