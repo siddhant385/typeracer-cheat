@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Typeracer Helper",
+  "version": "1.0",
+  "description": "Automate typing and OCR challenges on Typeracer with custom speed and errors.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://*.typeracer.com/*", "https://api.ocr.space/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "icons/Blog.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.typeracer.com/*"],
+      "js": ["content_script.js"]
+    }
+  ]
+}
