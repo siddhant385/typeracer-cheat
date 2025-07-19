@@ -9,7 +9,7 @@ chrome.runtime.onInstalled.addListener((details) => {
         
         // Set default settings
         const defaultSettings = {
-            speed: 80,
+            speed: 50, // More realistic default - around 24 WPM
             errorRate: 2,
             autoSubmit: false,
             humanizedTyping: true,

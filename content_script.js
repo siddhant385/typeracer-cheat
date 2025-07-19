@@ -19,7 +19,7 @@
     let isTyping = false;
     let typingStats = { wordsTyped: 0, errorsIntentional: 0, totalChars: 0 };
     let config = {
-        speed: 80,
+        speed: 50, // Updated to match popup default
         errorRate: 2,
         autoSubmit: false,
         ocrApiKey: "K88541616888957",
@@ -150,6 +150,20 @@
                 inputEl.value += " ";
                 inputEl.dispatchEvent(new Event("input", { bubbles: true }));
                 isTyping = false;
+                
+                // Send stats to background
+                const avgCharsPerWord = 5;
+                const estimatedWpm = Math.round((60 * 1000) / (config.speed * avgCharsPerWord));
+                chrome.runtime.sendMessage({
+                    type: 'updateStats',
+                    stats: {
+                        wordsTyped: 1,
+                        errors: typingStats.errorsIntentional,
+                        wpm: estimatedWpm,
+                        raceCompleted: false
+                    }
+                });
+                
                 console.log(`✅ Typing complete! Stats: ${typingStats.wordsTyped} words, ${typingStats.errorsIntentional} errors`);
             }
         }

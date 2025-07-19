@@ -3,7 +3,7 @@
   "name": "TypeRacer Pro - Advanced Typing Bot",
   "version": "2.0",
   "description": "Advanced TypeRacer automation with human-like typing patterns, OCR support, and modern UI. Educational use only.",
-  "permissions": ["storage"],
+  "permissions": ["storage", "notifications", "contextMenus"],
   "host_permissions": ["https://*.typeracer.com/*", "https://api.ocr.space/*"],
   "action": {
     "default_popup": "popup.html",

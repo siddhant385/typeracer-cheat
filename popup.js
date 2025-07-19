@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const raceCount = document.getElementById('raceCount');
 
     const DEFAULTS = {
-        speed: 80,
+        speed: 50, // More realistic default
         errorRate: 2,
         autoSubmit: false,
         humanizedTyping: true,
@@ -38,9 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
         burstMode.checked = data.burstMode;
         ocrApiKey.value = data.ocrApiKey;
 
-        // Update stats
-        const targetWpm = Math.round(60000 / data.speed);
-        currentWpm.textContent = targetWpm;
+        // Update stats - Realistic WPM calculation
+        // Formula: WPM = (60 seconds * 1000ms) / (speed_per_char * avg_chars_per_word)
+        // Average word length is ~5 characters including space
+        const avgCharsPerWord = 5;
+        const targetWpm = Math.round((60 * 1000) / (data.speed * avgCharsPerWord));
+        currentWpm.textContent = Math.min(targetWpm, 200); // Cap at 200 WPM max
         
         const accuracy = Math.max(95, 100 - data.errorRate);
         currentAccuracy.textContent = accuracy + '%';
@@ -78,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // Validation
-        if (newSettings.speed < 10 || newSettings.speed > 200) {
-            showStatus('⚠️ Speed must be between 10-200ms', 'error');
+        if (newSettings.speed < 5 || newSettings.speed > 200) {
+            showStatus('⚠️ Speed must be between 5-200ms', 'error');
             return;
         }
 
@@ -89,6 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         chrome.storage.local.set(newSettings, () => {
+            if (chrome.runtime.lastError) {
+                showStatus('❌ Failed to save settings', 'error');
+                return;
+            }
             showStatus('✅ Settings saved successfully!', 'success');
             updateUI(newSettings);
         });
@@ -107,14 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sync sliders with number inputs
     speedSlider.addEventListener('input', (e) => {
         speedInput.value = e.target.value;
-        const wpm = Math.round(60000 / e.target.value);
-        currentWpm.textContent = wpm;
+        const avgCharsPerWord = 5;
+        const wpm = Math.round((60 * 1000) / (e.target.value * avgCharsPerWord));
+        currentWpm.textContent = Math.min(wpm, 200); // Cap at 200 WPM
     });
     
     speedInput.addEventListener('input', (e) => {
         speedSlider.value = e.target.value;
-        const wpm = Math.round(60000 / e.target.value);
-        currentWpm.textContent = wpm;
+        const avgCharsPerWord = 5;
+        const wpm = Math.round((60 * 1000) / (e.target.value * avgCharsPerWord));
+        currentWpm.textContent = Math.min(wpm, 200); // Cap at 200 WPM
     });
     
     errorRateSlider.addEventListener('input', (e) => {
