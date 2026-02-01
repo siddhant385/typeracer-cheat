@@ -1,5 +1,7 @@
 # 🏎️ TypeRacer Pro - Advanced Typing Bot
 
+> Note: I have already emailed to the **[typeracer](play.typeracer.com)** about this bug now this may not work and I don't have time to continue this project.
+
 > **⚠️ Educational Purpose Only**: This extension is created for educational purposes to understand automation and web scraping. Please use responsibly and in accordance with TypeRacer's terms of service.
 
 ## 🌟 Features
@@ -122,17 +124,6 @@ typeracer-cheat/
 - **Adaptive Timing**: Context-aware typing speed adjustment
 - **Memory Management**: Proper cleanup of observers and timers
 
-## 📊 Rating & Analysis
-
-### 🏆 Overall Rating: 9.2/10
-
-| Aspect | Rating | Description |
-|--------|--------|-------------|
-| **🎨 Beauty** | 9.5/10 | Modern, professional UI with smooth animations |
-| **⚙️ Functionality** | 9.0/10 | Comprehensive feature set with OCR support |
-| **💻 Code Quality** | 9.0/10 | Clean, well-documented, modular architecture |
-| **🎯 Practicality** | 9.0/10 | Easy to use, effective, and educational |
-
 ### 💪 Strengths
 - ✅ **Excellent UI/UX**: Modern, intuitive interface
 - ✅ **Advanced Features**: Humanized typing, burst mode, OCR
@@ -143,6 +134,7 @@ typeracer-cheat/
 ### 🔄 Areas for Improvement
 - 🔧 **API Dependencies**: Relies on external OCR service
 - 🔧 **Detection Resilience**: May need updates if TypeRacer changes
+- 🔧 **More Antiblocking**: The more random typing behavior to prevent blocking.
 - 🔧 **Performance**: Could add more optimization for slower devices
 
 ## 🤝 Contributing
@@ -168,9 +160,7 @@ Use this tool responsibly and ethically. Always respect the platform's rules and
 
 ## 🙏 Acknowledgments
 
-- TypeRacer for providing the platform
 - OCR.space for the OCR API
-- Chrome Extensions team for the excellent documentation
 - The open-source community for inspiration
 
 ---
